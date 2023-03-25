@@ -12,16 +12,16 @@ import pandas as pd
 options = Options()
 options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
+driver.implicitly_wait(3)
 driver.get('https://www.naukri.com/data-analyst-jobs?k=data%20analyst')
 # driver.maximize_window()
-driver.minimize_window()
+# driver.minimize_window()
 data_list = []
-# driver.implicitly_wait(5)
-sections = driver.find_elements(By.TAG_NAME, 'article')
-print('length of section is: ', len(sections))
 
-time.sleep(5)
+sections = driver.find_elements(By.TAG_NAME, 'article')
+# sections = driver.find_elements(By.XPATH, '//*[@id="root"]/div[4]/div/div/section[2]/div[2]/article[3]')
+print('length of section is: ', len(sections))
+print(sections)
 
 for section in sections:
 
@@ -39,7 +39,7 @@ for section in sections:
     except:
         salary = 'Not disclosed'
     try:
-        skills = section.find_elements(By.CLASS_NAME, 'tags.has-description').text
+        skills = section.find_element(By.CLASS_NAME, 'tags.has-description').text
     except:
         skills = 'Not mentioned'
     try:
@@ -55,9 +55,11 @@ for section in sections:
     except:
         url = ''
     try:
-        location = section.find_element(By.CLASS_NAME, 'ellipsis.fleft.locWdth').text
+        location = section.find_element(By.CLASS_NAME, 'ellipsis.fleft.locWdth')
     except:
-        location = section.find_element(By.CLASS_NAME, 'ellipsis.fleft.locWdth2').text
+        location = section.find_element(By.CLASS_NAME, 'ellipsis.fleft.locWdth2')
+    else:
+        location = ''
     try:
         experience = section.find_element(By.CLASS_NAME, 'ellipsis.fleft.expwdth').text
     except:
@@ -89,7 +91,9 @@ for section in sections:
 
 data_df = pd.DataFrame(data_list)
 data_df.to_csv('jobDataset.csv')
-print(data_df)
+print(data_df.skills)
 
 print('done')
+
+# time.sleep(5)
 # driver.close()
