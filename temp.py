@@ -1,0 +1,1 @@
+assert 'sanju' in 'sanj u yadav', 'nahi hai'
